@@ -1,0 +1,478 @@
+/* ==========================================================================
+   ESTILOS GENERALES Y LAYOUT
+   ========================================================================== */
+
+.app-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 3rem 1.5rem;
+  width: 100%;
+}
+
+/* ==========================================================================
+   NAVBAR
+   ========================================================================== */
+
+.navbar-container {
+  background: #111827;
+  border-bottom: 1px solid #1f2937;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.navbar-content {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.navbar-logo-icon {
+  font-size: 1.8rem;
+  background: linear-gradient(135deg, #0ea5e9, #38bdf8);
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.4);
+}
+
+.navbar-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #f9fafb;
+  letter-spacing: -0.02em;
+}
+
+.navbar-subtitle {
+  font-size: 0.8rem;
+  color: #9ca3af;
+  margin-top: 2px;
+}
+
+.navbar-user-badge {
+  background: #1f2937;
+  border: 1px solid #374151;
+  padding: 0.45rem 0.9rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.navbar-user-label {
+  color: #9ca3af;
+}
+
+.navbar-user-name {
+  color: #38bdf8;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   ENCABEZADO DE SECCIÓN Y BADGES
+   ========================================================================== */
+
+.seccion-header {
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.seccion-tag {
+  display: inline-block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+}
+
+.seccion-titulo {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #f8fafc;
+  letter-spacing: -0.03em;
+}
+
+.seccion-subtitulo {
+  color: #94a3b8;
+  font-size: 0.95rem;
+  margin-top: 0.35rem;
+  max-width: 650px;
+}
+
+.badge-estado-conexion {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #34d399;
+  font-size: 0.85rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.punto-latencia {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  animation: pulso 2s infinite;
+}
+
+@keyframes pulso {
+  0% { transform: scale(0.95); opacity: 0.7; }
+  50% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.7; }
+}
+
+/* ==========================================================================
+   GRID DE TARJETAS DE MÉTRICAS (KPIs)
+   ========================================================================== */
+
+.tarjetas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.tarjeta-metrica {
+  background: #1e293b;
+  border-radius: 12px;
+  padding: 1.35rem;
+  border: 1px solid #334155;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.tarjeta-metrica:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.3);
+  border-color: #475569;
+}
+
+.tarjeta-metrica-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.tarjeta-metrica-titulo {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tarjeta-metrica-icono {
+  font-size: 1.35rem;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.35rem;
+  border-radius: 8px;
+  line-height: 1;
+}
+
+.tarjeta-metrica-valor {
+  font-size: 1.9rem;
+  font-weight: 800;
+  color: #f8fafc;
+  line-height: 1.2;
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
+}
+
+.tarjeta-metrica-subtitulo {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* ==========================================================================
+   TABLA DE DATOS
+   ========================================================================== */
+
+.tabla-card-contenedor {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.tabla-encabezado-seccion {
+  padding: 1.25rem 1.5rem;
+  background: #1e293b;
+  border-bottom: 1px solid #334155;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.tabla-titulo {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #f1f5f9;
+}
+
+.tabla-descripcion {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  margin-top: 0.25rem;
+}
+
+.codigo-inline {
+  background: #0f172a;
+  color: #38bdf8;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  border: 1px solid #334155;
+}
+
+.tabla-conteo-badge {
+  background: #0f172a;
+  border: 1px solid #334155;
+  color: #cbd5e1;
+  font-size: 0.8rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.tabla-scroll-wrapper {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.tabla-datos {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.tabla-datos thead tr {
+  background-color: #0f172a;
+  color: #94a3b8;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid #334155;
+}
+
+.tabla-datos th {
+  padding: 0.9rem 1.1rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.tabla-datos tbody tr {
+  border-bottom: 1px solid #273549;
+  transition: background-color 0.15s ease;
+}
+
+.tabla-datos tbody tr:last-child {
+  border-bottom: none;
+}
+
+.tabla-datos tbody tr:hover {
+  background-color: rgba(51, 65, 85, 0.4);
+}
+
+.tabla-datos td {
+  padding: 0.9rem 1.1rem;
+  color: #e2e8f0;
+  vertical-align: middle;
+}
+
+.celda-destacada {
+  font-weight: 600;
+  color: #f8fafc;
+}
+
+.zona-pill {
+  background: #0f172a;
+  color: #94a3b8;
+  padding: 0.2rem 0.55rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  border: 1px solid #334155;
+}
+
+/* Badges de Calidad del Aire */
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.7rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.badge-buena {
+  background-color: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.badge-aceptable {
+  background-color: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.badge-mala {
+  background-color: rgba(244, 63, 94, 0.15);
+  color: #fb7185;
+  border: 1px solid rgba(244, 63, 94, 0.3);
+}
+
+.badge-critica {
+  background-color: rgba(168, 85, 247, 0.2);
+  color: #c084fc;
+  border: 1px solid rgba(168, 85, 247, 0.4);
+}
+
+.badge-default {
+  background-color: #334155;
+  color: #cbd5e1;
+}
+
+/* Indicadores de Estado Operativo */
+.estado-indicador {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.punto-estado {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.estado-activo {
+  color: #34d399;
+}
+.estado-activo .punto-estado {
+  background-color: #10b981;
+  box-shadow: 0 0 6px #10b981;
+}
+
+.estado-mantenimiento {
+  color: #fbbf24;
+}
+.estado-mantenimiento .punto-estado {
+  background-color: #f59e0b;
+}
+
+.estado-calibrando {
+  color: #38bdf8;
+}
+.estado-calibrando .punto-estado {
+  background-color: #0ea5e9;
+}
+
+.tabla-vacia {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+/* ==========================================================================
+   ESTADO DE CARGA Y SPINNER
+   ========================================================================== */
+
+.cargando-contenedor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1rem;
+  gap: 1.25rem;
+  color: #94a3b8;
+}
+
+.spinner {
+  width: 44px;
+  height: 44px;
+  border: 3px solid rgba(56, 189, 248, 0.15);
+  border-top-color: #38bdf8;
+  border-radius: 50%;
+  animation: girar 0.8s linear infinite;
+}
+
+@keyframes girar {
+  to { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   FOOTER
+   ========================================================================== */
+
+.footer-dashboard {
+  margin-top: auto;
+  border-top: 1px solid #1f2937;
+  background: #0b1120;
+  padding: 1.5rem;
+  text-align: center;
+  color: #64748b;
+  font-size: 0.85rem;
+}
+
+.footer-content {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
