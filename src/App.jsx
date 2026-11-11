@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
+import PanelAnalitico from './components/PanelAnalitico';
 import TarjetaMetrica from './components/TarjetaMetrica';
 import TablaDatos from './components/TablaDatos';
 import { obtenerDatosVisualizacion, procesarDatos } from './services/dataService';
@@ -42,10 +43,13 @@ export default function App() {
 
       <main className="dashboard-container">
         {}
+        <PanelAnalitico />
+
+        {}
         <header className="seccion-header">
           <div>
-            <span className="seccion-tag">Arquitectura Modular &bull; Práctica 2</span>
-            <h2 className="seccion-titulo">Panel de Control de Métricas Ambientales</h2>
+            <span className="seccion-tag">Telemetría IoT Local &bull; Dataset</span>
+            <h2 className="seccion-titulo">Red de Monitoreo Ambiental Estacionario</h2>
             <p className="seccion-subtitulo">
               Telemetría y condiciones meteorológicas de <strong>{dataset.length}</strong> estaciones de monitoreo, 
               procesadas en tiempo real mediante el servicio modular <code className="codigo-inline">dataService.js</code>.
@@ -53,7 +57,7 @@ export default function App() {
           </div>
           <div className="badge-estado-conexion">
             <span className="punto-latencia"></span>
-            <span>Servicio de Datos Conectado</span>
+            <span>Servicio Local Conectado</span>
           </div>
         </header>
 
@@ -61,7 +65,7 @@ export default function App() {
         {cargando ? (
           <div className="cargando-contenedor">
             <div className="spinner"></div>
-            <p>Consultando servicio asíncrono y calculando métricas...</p>
+            <p>Consultando servicio de datos y calculando métricas...</p>
           </div>
         ) : error ? (
           <div className="tabla-vacia" style={{ color: '#fb7185' }}>
@@ -115,7 +119,7 @@ export default function App() {
       {}
       <footer className="footer-dashboard">
         <div className="footer-content">
-          <span>Frontend Aplicado a la Ciencia de Datos &bull; Unidad 3</span>
+          <span>Desarrollo de Aplicaciones para Ciencia de Datos &bull; Unidad 3</span>
           <span>Desarrollado por: <strong>Vázquez Martín Eliezer Zuriel</strong></span>
         </div>
       </footer>

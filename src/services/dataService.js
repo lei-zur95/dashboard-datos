@@ -1,8 +1,56 @@
+import apiClient from './apiClient';
 import datasetRaw from '../data/dataset.json';
 
 /**
- * 
- * @returns {Promise<Array>} 
+ * @param {number} [latitud=19.26] 
+ * @param {number} [longitud=-98.89] 
+ * @returns {Promise<Object>} 
+ */
+export const obtenerSerieDeTiempo = async (latitud = 19.26, longitud = -98.89) => {
+  try {
+    const response = await apiClient.get('/forecast', {
+      params: {
+        latitude: latitud,
+        longitude: longitud,
+        current: 'temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,wind_speed_10m',
+        hourly: 'temperature_2m',
+        timezone: 'auto'
+      }
+    });
+
+    const data = response.data;
+    const current = data.current || {};
+    const units = data.current_units || {};
+
+    return {
+      temperaturaActual: `${current.temperature_2m !== undefined ? current.temperature_2m : 'N/A'} ${units.temperature_2m || '°C'}`,
+      sensacionTermica: `${current.apparent_temperature !== undefined ? current.apparent_temperature : 'N/A'} ${units.apparent_temperature || '°C'}`,
+      humedadRelativa: `${current.relative_humidity_2m !== undefined ? current.relative_humidity_2m : 'N/A'} ${units.relative_humidity_2m || '%'}`,
+      velocidadViento: `${current.wind_speed_10m !== undefined ? current.wind_speed_10m : 'N/A'} ${units.wind_speed_10m || 'km/h'}`,
+      precipitacion: `${current.precipitation !== undefined ? current.precipitation : 0} ${units.precipitation || 'mm'}`,
+      horaRegistro: current.time ? current.time.replace('T', ' ') : 'Reciente',
+      coordenadas: `${data.latitude?.toFixed(2)}° N, ${data.longitude?.toFixed(2)}° W`,
+      zonaHoraria: data.timezone || 'Auto',
+      serieHoraria: data.hourly || null,
+      raw: data
+    };
+  } catch (error) {
+    let mensajeError;
+
+    if (error.response) {
+      mensajeError = `Error del Servidor (${error.response.status}): ${error.response.data?.reason || error.message}`;
+    } else if (error.request) {
+      mensajeError = 'Fallo de conexión: No se pudo contactar al servidor de Open-Meteo. Verifica tu conexión a internet o la URL configurada.';
+    } else {
+      mensajeError = `Error en la solicitud: ${error.message}`;
+    }
+
+    throw new Error(mensajeError, { cause: error });
+  }
+};
+
+/**
+ * @returns {Promise<Array>} Promesa que resuelve al array de registros del dataset.
  */
 export const obtenerDatosVisualizacion = async () => {
   return new Promise((resolve, reject) => {
@@ -11,14 +59,14 @@ export const obtenerDatosVisualizacion = async () => {
         resolve(JSON.parse(JSON.stringify(datasetRaw)));
       }, 350);
     } catch (error) {
-      reject(new Error("Error al obtener el dataset de visualización: " + error.message));
+      reject(new Error("Error al obtener el dataset de visualización: " + error.message, { cause: error }));
     }
   });
 };
 
 /**
- * @param {Array} datos
- * @returns {Object} 
+ * @param {Array} datos 
+ * @returns {Object}
  */
 export const procesarDatos = (datos) => {
   if (!datos || !Array.isArray(datos) || datos.length === 0) {
@@ -53,7 +101,6 @@ export const procesarDatos = (datos) => {
   const estacionCritica = datos.reduce((prev, curr) => 
     (Number(curr.pm25) > Number(prev.pm25)) ? curr : prev, datos[0]
   );
-
 
   const registrosProcesados = datos.map(item => {
     let severidadCalidad = 'normal';
@@ -91,6 +138,7 @@ export const procesarDatos = (datos) => {
 };
 
 export default {
+  obtenerSerieDeTiempo,
   obtenerDatosVisualizacion,
   procesarDatos
 };

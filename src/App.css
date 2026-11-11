@@ -160,6 +160,176 @@
 }
 
 /* ==========================================================================
+   PANEL ANALÍTICO (PRÁCTICA 3 - INTEGRACIÓN API REST)
+   ========================================================================== */
+
+.panel-analitico-card {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 14px;
+  padding: 1.75rem;
+  margin-bottom: 2.5rem;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.25), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.panel-analitico-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #38bdf8, #818cf8, #c084fc);
+}
+
+.panel-analitico-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.panel-analitico-titulo {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #f8fafc;
+  margin-top: 0.35rem;
+}
+
+.panel-analitico-descripcion {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  margin-top: 0.35rem;
+  max-width: 620px;
+}
+
+.panel-acciones-botones {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.btn-antgravity-primary {
+  background: linear-gradient(135deg, #0284c7, #0ea5e9);
+  color: #ffffff;
+  border: none;
+  padding: 0.75rem 1.4rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(14, 165, 233, 0.35);
+}
+
+.btn-antgravity-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #0369a1, #0284c7);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(14, 165, 233, 0.5);
+}
+
+.btn-antgravity-primary:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-antgravity-secondary {
+  background: transparent;
+  color: #94a3b8;
+  border: 1px solid #475569;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-antgravity-secondary:hover:not(:disabled) {
+  background: rgba(244, 63, 94, 0.1);
+  color: #fb7185;
+  border-color: #f43f5e;
+}
+
+.btn-antgravity-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.spinner-boton {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: girar 0.6s linear infinite;
+  display: inline-block;
+}
+
+.panel-estado-cargando {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 1rem;
+  gap: 0.75rem;
+  background: rgba(15, 23, 42, 0.4);
+  border-radius: 10px;
+  border: 1px dashed #334155;
+  margin: 1.25rem 0;
+}
+
+.texto-cargando {
+  color: #38bdf8;
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+
+.subtexto-cargando {
+  color: #64748b;
+  font-size: 0.8rem;
+}
+
+.panel-datos-metadata {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #94a3b8;
+  font-size: 0.85rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #334155;
+  flex-wrap: wrap;
+}
+
+.panel-datos-metadata strong {
+  color: #e2e8f0;
+}
+
+.panel-estado-espera {
+  padding: 2rem 1rem;
+  text-align: center;
+  background: rgba(15, 23, 42, 0.4);
+  border-radius: 10px;
+  border: 1px dashed #334155;
+  color: #94a3b8;
+  font-size: 0.95rem;
+}
+
+.panel-estado-espera strong {
+  color: #38bdf8;
+}
+
+/* ==========================================================================
    GRID DE TARJETAS DE MÉTRICAS (KPIs)
    ========================================================================== */
 
