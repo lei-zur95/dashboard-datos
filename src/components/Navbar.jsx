@@ -10,7 +10,6 @@ export default function Navbar() {
           </div>
         </div>
         <div className="navbar-user-badge">
-          <span className="navbar-user-label">Desarrollador:</span>
           <span className="navbar-user-name">Vázquez Martín Eliezer Zuriel</span>
         </div>
       </div>

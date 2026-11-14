@@ -7,15 +7,12 @@ export default function PanelAnalitico() {
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState(null);
 
-  const handleConsultarClima = async (forzarError = false) => {
+  const handleConsultarClima = async () => {
     setCargando(true);
     setError(null);
 
     try {
-      const lat = forzarError ? 9999 : 19.26;
-      const lon = forzarError ? 9999 : -98.89;
-
-      const resultado = await obtenerSerieDeTiempo(lat, lon);
+      const resultado = await obtenerSerieDeTiempo();
       setDatos(resultado);
     } catch (err) {
       setError(err.message || 'Error al conectar con la API de ciencia de datos.');
@@ -42,7 +39,7 @@ export default function PanelAnalitico() {
           <button
             type="button"
             className="btn-antgravity-primary"
-            onClick={() => handleConsultarClima(false)}
+            onClick={handleConsultarClima}
             disabled={cargando}
           >
             {cargando ? (
@@ -57,20 +54,12 @@ export default function PanelAnalitico() {
               </>
             )}
           </button>
-
-          <button
-            type="button"
-            className="btn-antgravity-secondary"
-            onClick={() => handleConsultarClima(true)}
-            disabled={cargando}
-            title="Prueba de laboratorio: Fuerza una respuesta de error para verificar la captura en la UI"
-          >
-            Simular Fallo de Conexión
-          </button>
         </div>
       </div>
 
-      {}
+      {/* =========================================================================
+          RENDERIZADO CONDICIONAL DE ESTADOS ASÍNCRONOS
+          ========================================================================= */}
 
       {}
       {cargando && (

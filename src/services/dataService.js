@@ -2,9 +2,9 @@ import apiClient from './apiClient';
 import datasetRaw from '../data/dataset.json';
 
 /**
- * @param {number} [latitud=19.26] 
- * @param {number} [longitud=-98.89] 
- * @returns {Promise<Object>} 
+ * @param {number} [latitud=19.26]
+ * @param {number} [longitud=-98.89]
+ * @returns {Promise<Object>}
  */
 export const obtenerSerieDeTiempo = async (latitud = 19.26, longitud = -98.89) => {
   try {
@@ -50,59 +50,87 @@ export const obtenerSerieDeTiempo = async (latitud = 19.26, longitud = -98.89) =
 };
 
 /**
- * @returns {Promise<Array>} Promesa que resuelve al array de registros del dataset.
+ * @param {Array} datos 
+ * @param {Object} [filtros={ categoria: 'todas', fecha: '' }]
+ * @returns {Array}
  */
-export const obtenerDatosVisualizacion = async () => {
-  return new Promise((resolve, reject) => {
-    try {
-      setTimeout(() => {
-        resolve(JSON.parse(JSON.stringify(datasetRaw)));
-      }, 350);
-    } catch (error) {
-      reject(new Error("Error al obtener el dataset de visualización: " + error.message, { cause: error }));
+export const aplicarFiltros = (datos, filtros = { categoria: 'todas', fecha: '' }) => {
+  if (!datos || !Array.isArray(datos)) return [];
+
+  return datos.filter((item) => {
+    if (filtros.fecha && !item.fechaRegistro.startsWith(filtros.fecha)) {
+      return false;
     }
+
+    if (filtros.categoria && filtros.categoria !== 'todas') {
+      switch (filtros.categoria) {
+        case 'temperatura':
+          return Number(item.temperatura) >= 23.0;
+
+        case 'viento':
+          return Number(item.viento || 0) >= 20.0;
+
+        case 'calidadAire':
+          return Number(item.pm25) > 35.0;
+
+        case 'operativas':
+          return item.estadoOperativo === 'Activo';
+
+        default:
+          return true;
+      }
+    }
+
+    return true;
   });
 };
 
 /**
  * @param {Array} datos 
- * @returns {Object}
+ * @param {Object} [filtros] 
+ * @returns {Object} 
  */
-export const procesarDatos = (datos) => {
-  if (!datos || !Array.isArray(datos) || datos.length === 0) {
+export const procesarDatos = (datos, filtros = null) => {
+  const datosAProcesar = filtros ? aplicarFiltros(datos, filtros) : datos;
+
+  if (!datosAProcesar || !Array.isArray(datosAProcesar) || datosAProcesar.length === 0) {
     return {
       registros: [],
       metricas: {
-        total: 0,
-        promedioTemp: "0.0 °C",
-        promedioPM25: "0.0 µg/m³",
-        promedioCO2: "0 ppm",
-        activas: "0 / 0",
-        estacionCritica: "N/A"
+        total: '0 Sensores',
+        promedioTemp: '0.0 °C',
+        promedioPM25: '0.0 µg/m³',
+        promedioCO2: '0 ppm',
+        promedioViento: '0.0 km/h',
+        activas: '0 de 0',
+        estacionCritica: 'Ninguna'
       },
       etiquetas: [],
       valores: []
     };
   }
 
-  const total = datos.length;
+  const total = datosAProcesar.length;
 
-  const sumaTemp = datos.reduce((acc, curr) => acc + Number(curr.temperatura || 0), 0);
+  const sumaTemp = datosAProcesar.reduce((acc, curr) => acc + Number(curr.temperatura || 0), 0);
   const promedioTemp = (sumaTemp / total).toFixed(1);
 
-  const sumaPM25 = datos.reduce((acc, curr) => acc + Number(curr.pm25 || 0), 0);
+  const sumaPM25 = datosAProcesar.reduce((acc, curr) => acc + Number(curr.pm25 || 0), 0);
   const promedioPM25 = (sumaPM25 / total).toFixed(1);
 
-  const sumaCO2 = datos.reduce((acc, curr) => acc + Number(curr.co2 || 0), 0);
+  const sumaCO2 = datosAProcesar.reduce((acc, curr) => acc + Number(curr.co2 || 0), 0);
   const promedioCO2 = Math.round(sumaCO2 / total);
 
-  const activas = datos.filter(item => item.estadoOperativo === 'Activo').length;
+  const sumaViento = datosAProcesar.reduce((acc, curr) => acc + Number(curr.viento || 0), 0);
+  const promedioViento = (sumaViento / total).toFixed(1);
 
-  const estacionCritica = datos.reduce((prev, curr) => 
-    (Number(curr.pm25) > Number(prev.pm25)) ? curr : prev, datos[0]
+  const activas = datosAProcesar.filter(item => item.estadoOperativo === 'Activo').length;
+
+  const estacionCritica = datosAProcesar.reduce((prev, curr) => 
+    (Number(curr.pm25) > Number(prev.pm25)) ? curr : prev, datosAProcesar[0]
   );
 
-  const registrosProcesados = datos.map(item => {
+  const registrosProcesados = datosAProcesar.map(item => {
     let severidadCalidad = 'normal';
     if (item.calidadAire === 'Buena') severidadCalidad = 'buena';
     else if (item.calidadAire === 'Aceptable') severidadCalidad = 'aceptable';
@@ -115,12 +143,13 @@ export const procesarDatos = (datos) => {
       humedadFormatted: `${item.humedad} %`,
       pm25Formatted: `${item.pm25} µg/m³`,
       co2Formatted: `${item.co2} ppm`,
+      vientoFormatted: `${item.viento || 0} km/h`,
       severidadCalidad
     };
   });
 
-  const etiquetas = datos.map(item => item.estacion);
-  const valores = datos.map(item => item.pm25);
+  const etiquetas = datosAProcesar.map(item => item.estacion);
+  const valores = datosAProcesar.map(item => item.pm25);
 
   return {
     registros: registrosProcesados,
@@ -129,6 +158,7 @@ export const procesarDatos = (datos) => {
       promedioTemp: `${promedioTemp} °C`,
       promedioPM25: `${promedioPM25} µg/m³`,
       promedioCO2: `${promedioCO2} ppm`,
+      promedioViento: `${promedioViento} km/h`,
       activas: `${activas} de ${total}`,
       estacionCritica: estacionCritica.estacion
     },
@@ -137,8 +167,27 @@ export const procesarDatos = (datos) => {
   };
 };
 
+/**
+ * @param {Object} [filtros={ categoria: 'todas', fecha: '' }]
+ * @returns {Promise<Object>}
+ */
+export const obtenerDatosVisualizacion = async (filtros = { categoria: 'todas', fecha: '' }) => {
+  return new Promise((resolve, reject) => {
+    try {
+      setTimeout(() => {
+        const copiaDatos = JSON.parse(JSON.stringify(datasetRaw));
+        const resultado = procesarDatos(copiaDatos, filtros);
+        resolve(resultado);
+      }, 200);
+    } catch (error) {
+      reject(new Error("Error al obtener los datos de visualización: " + error.message, { cause: error }));
+    }
+  });
+};
+
 export default {
   obtenerSerieDeTiempo,
   obtenerDatosVisualizacion,
-  procesarDatos
+  procesarDatos,
+  aplicarFiltros
 };

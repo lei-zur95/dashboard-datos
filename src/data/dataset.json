@@ -7,6 +7,7 @@
     "humedad": 58,
     "pm25": 18.2,
     "co2": 412,
+    "viento": 12.5,
     "calidadAire": "Buena",
     "estadoOperativo": "Activo",
     "fechaRegistro": "2026-11-05 08:00"
@@ -19,6 +20,7 @@
     "humedad": 42,
     "pm25": 58.6,
     "co2": 540,
+    "viento": 28.4,
     "calidadAire": "Mala",
     "estadoOperativo": "Activo",
     "fechaRegistro": "2026-11-05 08:15"
@@ -31,6 +33,7 @@
     "humedad": 50,
     "pm25": 41.3,
     "co2": 495,
+    "viento": 9.2,
     "calidadAire": "Aceptable",
     "estadoOperativo": "Activo",
     "fechaRegistro": "2026-11-05 08:30"
@@ -43,9 +46,10 @@
     "humedad": 55,
     "pm25": 35.8,
     "co2": 460,
+    "viento": 16.0,
     "calidadAire": "Aceptable",
     "estadoOperativo": "Activo",
-    "fechaRegistro": "2026-11-05 08:45"
+    "fechaRegistro": "2026-11-06 08:45"
   },
   {
     "id": 5,
@@ -55,9 +59,10 @@
     "humedad": 68,
     "pm25": 11.4,
     "co2": 388,
+    "viento": 8.5,
     "calidadAire": "Buena",
     "estadoOperativo": "Activo",
-    "fechaRegistro": "2026-11-05 09:00"
+    "fechaRegistro": "2026-11-06 09:00"
   },
   {
     "id": 6,
@@ -67,9 +72,10 @@
     "humedad": 47,
     "pm25": 64.2,
     "co2": 580,
+    "viento": 32.1,
     "calidadAire": "Muy Mala",
     "estadoOperativo": "Activo",
-    "fechaRegistro": "2026-11-05 09:15"
+    "fechaRegistro": "2026-11-06 09:15"
   },
   {
     "id": 7,
@@ -79,9 +85,10 @@
     "humedad": 60,
     "pm25": 22.0,
     "co2": 425,
+    "viento": 11.0,
     "calidadAire": "Buena",
     "estadoOperativo": "Mantenimiento",
-    "fechaRegistro": "2026-11-05 09:30"
+    "fechaRegistro": "2026-11-10 09:30"
   },
   {
     "id": 8,
@@ -91,9 +98,10 @@
     "humedad": 52,
     "pm25": 48.7,
     "co2": 505,
+    "viento": 22.8,
     "calidadAire": "Aceptable",
     "estadoOperativo": "Activo",
-    "fechaRegistro": "2026-11-05 09:45"
+    "fechaRegistro": "2026-11-10 09:45"
   },
   {
     "id": 9,
@@ -103,9 +111,10 @@
     "humedad": 40,
     "pm25": 61.9,
     "co2": 565,
+    "viento": 35.6,
     "calidadAire": "Mala",
     "estadoOperativo": "Activo",
-    "fechaRegistro": "2026-11-05 10:00"
+    "fechaRegistro": "2026-11-10 10:00"
   },
   {
     "id": 10,
@@ -115,9 +124,10 @@
     "humedad": 45,
     "pm25": 53.1,
     "co2": 525,
+    "viento": 29.3,
     "calidadAire": "Mala",
     "estadoOperativo": "Activo",
-    "fechaRegistro": "2026-11-05 10:15"
+    "fechaRegistro": "2026-11-13 10:15"
   },
   {
     "id": 11,
@@ -127,9 +137,10 @@
     "humedad": 59,
     "pm25": 28.4,
     "co2": 435,
+    "viento": 18.0,
     "calidadAire": "Aceptable",
     "estadoOperativo": "Calibrando",
-    "fechaRegistro": "2026-11-05 10:30"
+    "fechaRegistro": "2026-11-13 10:30"
   },
   {
     "id": 12,
@@ -139,8 +150,9 @@
     "humedad": 62,
     "pm25": 16.5,
     "co2": 402,
+    "viento": 10.4,
     "calidadAire": "Buena",
     "estadoOperativo": "Activo",
-    "fechaRegistro": "2026-11-05 10:45"
+    "fechaRegistro": "2026-11-13 10:45"
   }
 ]
