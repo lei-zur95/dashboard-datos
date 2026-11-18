@@ -1,10 +1,20 @@
+/**
+ * Capa de Servicios: dataService.js
+ * Prácticas 2, 3, 4 y 5 - Unidad 3: Arquitectura, APIs, Dashboard y Visualización Avanzada
+ * 
+ * Gestiona el consumo de endpoints externos (Axios / Open-Meteo), la carga
+ * de datasets, el filtrado multidimensional y el Data Mapping para Chart.js.
+ */
+
 import apiClient from './apiClient';
 import datasetRaw from '../data/dataset.json';
 
 /**
- * @param {number} [latitud=19.26]
- * @param {number} [longitud=-98.89]
- * @returns {Promise<Object>}
+ * Consulta la API externa de Open-Meteo (/forecast) para obtener telemetría meteorológica (Práctica 3).
+ * 
+ * @param {number} [latitud=19.26] - Latitud geográfica (por defecto: Chalco, Edo. Méx.)
+ * @param {number} [longitud=-98.89] - Longitud geográfica (por defecto: Chalco, Edo. Méx.)
+ * @returns {Promise<Object>} Objeto con datos limpios y formateados para la interfaz.
  */
 export const obtenerSerieDeTiempo = async (latitud = 19.26, longitud = -98.89) => {
   try {
@@ -50,18 +60,22 @@ export const obtenerSerieDeTiempo = async (latitud = 19.26, longitud = -98.89) =
 };
 
 /**
- * @param {Array} datos 
- * @param {Object} [filtros={ categoria: 'todas', fecha: '' }]
- * @returns {Array}
+ * Filtra el dataset crudo en función de los parámetros de categoría y fecha (Práctica 4).
+ * 
+ * @param {Array} datos - Arreglo de registros crudos.
+ * @param {Object} [filtros={ categoria: 'todas', fecha: '' }] - Criterios de filtrado.
+ * @returns {Array} Subconjunto filtrado de registros.
  */
 export const aplicarFiltros = (datos, filtros = { categoria: 'todas', fecha: '' }) => {
   if (!datos || !Array.isArray(datos)) return [];
 
   return datos.filter((item) => {
+    // 1. Filtrado por fecha (coincidencia de prefijo YYYY-MM-DD)
     if (filtros.fecha && !item.fechaRegistro.startsWith(filtros.fecha)) {
       return false;
     }
 
+    // 2. Filtrado por categoría analítica
     if (filtros.categoria && filtros.categoria !== 'todas') {
       switch (filtros.categoria) {
         case 'temperatura':
@@ -86,9 +100,11 @@ export const aplicarFiltros = (datos, filtros = { categoria: 'todas', fecha: '' 
 };
 
 /**
- * @param {Array} datos 
- * @param {Object} [filtros] 
- * @returns {Object} 
+ * Procesa un arreglo de datos aplicando cálculos estadísticos y transformaciones visuales.
+ * 
+ * @param {Array} datos - Arreglo de registros crudos.
+ * @param {Object} [filtros] - Opcional: filtros { categoria, fecha }.
+ * @returns {Object} Registros enriquecidos, métricas consolidadas y vectores para gráficos.
  */
 export const procesarDatos = (datos, filtros = null) => {
   const datosAProcesar = filtros ? aplicarFiltros(datos, filtros) : datos;
@@ -168,8 +184,66 @@ export const procesarDatos = (datos, filtros = null) => {
 };
 
 /**
- * @param {Object} [filtros={ categoria: 'todas', fecha: '' }]
- * @returns {Promise<Object>}
+ * Transforma y limpia un conjunto de datos para alimentar bibliotecas de visualización (Chart.js).
+ * Implementa Data Mapping extrayendo etiquetas para el eje X y valores numéricos para el eje Y,
+ * con validación defensiva ante valores nulos, indefinidos o vacíos (Práctica 5).
+ * 
+ * @param {Array|Object} datosCrudos - Arreglo de registros o contenedor { registros: [...] }.
+ * @returns {Object} Estructura limpia { labels: Array, values: Array, temperaturas: Array, vientos: Array, categorias: Object }
+ */
+export const formatearParaGrafico = (datosCrudos) => {
+  // Validación defensiva requerida por la Práctica 5
+  if (!datosCrudos) {
+    return { labels: [], values: [], temperaturas: [], vientos: [], categorias: {} };
+  }
+
+  // Compatibilidad si se envía el objeto de visualización { registros: [...] } o el arreglo directo
+  const lista = Array.isArray(datosCrudos)
+    ? datosCrudos
+    : (Array.isArray(datosCrudos?.registros) ? datosCrudos.registros : []);
+
+  if (lista.length === 0) {
+    return { labels: [], values: [], temperaturas: [], vientos: [], categorias: {} };
+  }
+
+  // Eje X: Etiquetas limpias y legibles para cada estación o registro
+  const labels = lista.map((item) =>
+    item.estacion ? item.estacion.replace('Estación ', '') : `Sensor #${item.id}`
+  );
+
+  // Eje Y: Valores numéricos de la serie continua (concentración PM2.5)
+  const values = lista.map((item) => Number(item.pm25) || 0);
+
+  // Series numéricas adicionales para enriquecimiento analítico
+  const temperaturas = lista.map((item) => Number(item.temperatura) || 0);
+  const vientos = lista.map((item) => Number(item.viento) || 0);
+
+  // Agrupación por zonas geográficas para comparativas
+  const categorias = lista.reduce((acc, curr) => {
+    const zona = curr.zona || 'General';
+    if (!acc[zona]) {
+      acc[zona] = { sumaPM25: 0, conteo: 0, promedio: 0 };
+    }
+    acc[zona].sumaPM25 += Number(curr.pm25) || 0;
+    acc[zona].conteo += 1;
+    acc[zona].promedio = Number((acc[zona].sumaPM25 / acc[zona].conteo).toFixed(1));
+    return acc;
+  }, {});
+
+  return {
+    labels,
+    values,
+    temperaturas,
+    vientos,
+    categorias
+  };
+};
+
+/**
+ * Simula una petición HTTP asíncrona devolviendo el dataset filtrado y procesado.
+ * 
+ * @param {Object} [filtros={ categoria: 'todas', fecha: '' }] - Criterios de filtrado.
+ * @returns {Promise<Object>} Promesa que resuelve a los datos estructurados para visualización.
  */
 export const obtenerDatosVisualizacion = async (filtros = { categoria: 'todas', fecha: '' }) => {
   return new Promise((resolve, reject) => {
@@ -189,5 +263,6 @@ export default {
   obtenerSerieDeTiempo,
   obtenerDatosVisualizacion,
   procesarDatos,
-  aplicarFiltros
+  aplicarFiltros,
+  formatearParaGrafico
 };

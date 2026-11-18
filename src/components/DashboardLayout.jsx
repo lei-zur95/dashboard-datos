@@ -1,11 +1,20 @@
 import { useState, useEffect } from 'react';
 import PanelFiltros from './PanelFiltros';
 import TarjetaMetrica from './TarjetaMetrica';
-import ContenedorGrafico from './ContenedorGrafico';
+import GraficoTendencia from './charts/GraficoTendencia';
+import GraficoComparativo from './charts/GraficoComparativo';
 import TablaDatos from './TablaDatos';
 import PanelAnalitico from './PanelAnalitico';
-import { obtenerDatosVisualizacion } from '../services/dataService';
+import { obtenerDatosVisualizacion, formatearParaGrafico } from '../services/dataService';
 
+/**
+ * Componente Contenedor: DashboardLayout.jsx
+ * Práctica 5 - Unidad 3: Visualización Avanzada de Datos en el Dashboard
+ * 
+ * Gestiona el estado compartido de los filtros (Lifting State Up),
+ * coordina la obtención de datos y ensambla la interfaz integrando
+ * gráficos interactivos con Chart.js y react-chartjs-2 en CSS Grid.
+ */
 export default function DashboardLayout() {
   // 1. Estado global compartido para los controles de filtrado
   const [filtros, setFiltros] = useState({
@@ -13,15 +22,18 @@ export default function DashboardLayout() {
     fecha: ''
   });
 
+  // 2. Estado local para almacenar la información procesada y sincronizada
   const [datosVisualizacion, setDatosVisualizacion] = useState(null);
   const [cargando, setCargando] = useState(true);
 
+  // 3. useEffect que "escucha" cambios en [filtros] para sincronizar en tiempo real
   useEffect(() => {
     let activo = true;
 
     const actualizarDatosDashboard = async () => {
       try {
         setCargando(true);
+        // Consulta el servicio modular pasando el estado actual de filtros
         const resultado = await obtenerDatosVisualizacion(filtros);
         if (activo) {
           setDatosVisualizacion(resultado);
@@ -45,6 +57,9 @@ export default function DashboardLayout() {
   const metricas = datosVisualizacion?.metricas;
   const registros = datosVisualizacion?.registros || [];
 
+  // Data Mapping: Estructuras limpias { labels, values } preparadas para Chart.js
+  const datosGrafico = formatearParaGrafico(datosVisualizacion);
+
   return (
     <div className="dashboard-grid-layout">
       {/* =========================================================================
@@ -57,12 +72,12 @@ export default function DashboardLayout() {
           totalResultados={registros.length}
         />
 
-        {}
+        {/* Resumen contextual de la arquitectura */}
         <div className="sidebar-info-card">
-          <h5 className="sidebar-info-titulo">Arquitectura React</h5>
+          <h5 className="sidebar-info-titulo">Visualización Avanzada</h5>
           <p className="sidebar-info-desc">
-            Los filtros modifican el estado compartido en <code className="codigo-inline">DashboardLayout</code>,
-            propagando los datos reactivamente a tarjetas, gráficas y tablas mediante <strong>Lifting State Up</strong>.
+            Integración de <strong>Chart.js</strong> y <strong>react-chartjs-2</strong> en Canvas HTML5. 
+            Las gráficas de línea y barras se animan reactivamente ante cualquier cambio en el panel de filtros.
           </p>
         </div>
       </aside>
@@ -71,16 +86,16 @@ export default function DashboardLayout() {
           ÁREA PRINCIPAL (GRID FLUIDO Y RESPONSIVO)
           ========================================================================= */}
       <section className="dashboard-main-area">
-        {}
+        {/* Práctica 3: Telemetría en tiempo real desde Open-Meteo vía Axios */}
         <PanelAnalitico />
 
-        {}
+        {/* Encabezado del área de visualización analítica */}
         <header className="seccion-header">
           <div>
-            <span className="seccion-tag">Práctica 4 &bull; Dashboard Interactivo</span>
-            <h2 className="seccion-titulo">Visualización y Telemetría Multidimensional</h2>
+            <span className="seccion-tag">Práctica 5 &bull; Visualización Avanzada</span>
+            <h2 className="seccion-titulo">Tablero de Control y Análisis Gráfico</h2>
             <p className="seccion-subtitulo">
-              Métricas sincronizadas automáticamente con los filtros globales: 
+              Visualizaciones interactivas de telemetría ambiental filtradas por 
               categoría <strong>&ldquo;{filtros.categoria}&rdquo;</strong>
               {filtros.fecha ? ` y fecha "${filtros.fecha}"` : ' (todas las fechas)'}.
             </p>
@@ -88,18 +103,18 @@ export default function DashboardLayout() {
 
           <div className="badge-estado-conexion">
             <span className="punto-latencia"></span>
-            <span>{registros.length} Estaciones en Vista</span>
+            <span>{registros.length} Estaciones Analizadas</span>
           </div>
         </header>
 
         {cargando ? (
           <div className="cargando-contenedor">
             <div className="spinner"></div>
-            <p>Sincronizando métricas y tablas con los nuevos filtros...</p>
+            <p>Sincronizando métricas y renderizando gráficos interactivos...</p>
           </div>
         ) : (
           <>
-            {}
+            {/* 1. SECCIÓN SUPERIOR: Cuadrícula de Tarjetas de Métricas (KPIs) */}
             <div className="tarjetas-grid" aria-label="KPIs Dinámicos">
               <TarjetaMetrica
                 titulo="Temperatura Promedio"
@@ -134,10 +149,24 @@ export default function DashboardLayout() {
               />
             </div>
 
-            {}
-            <ContenedorGrafico registros={registros} />
+            {/* 2. SECCIÓN CENTRAL: Cuadrícula de Gráficos Interactivos (Chart.js) */}
+            <div className="charts-grid-container" aria-label="Gráficos de Visualización">
+              {/* Gráfico 1: Evolución temporal o continua con <Line /> */}
+              <GraficoTendencia
+                labels={datosGrafico.labels}
+                values={datosGrafico.values}
+                titulo="Evolución de Concentración PM2.5 (µg/m³)"
+              />
 
-            {}
+              {/* Gráfico 2: Comparativa de severidad con <Bar /> */}
+              <GraficoComparativo
+                labels={datosGrafico.labels}
+                values={datosGrafico.values}
+                titulo="Comparativa de Severidad por Sensor"
+              />
+            </div>
+
+            {/* 3. SECCIÓN INFERIOR: Tabla de Datos Tabular */}
             <TablaDatos datos={registros} />
           </>
         )}
